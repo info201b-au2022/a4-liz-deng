@@ -1,45 +1,111 @@
 ---
-title: "Your A4 Report Title (TODO: Revise title)"
-author: "Your Name"
-date: '2022-11-01'
+title: "Analysis of Mass Incarceration in the United States"
+author: "Elizabeth Deng"
+date: '2022-11-26'
 output: html_document
 ---
 
-```{r echo=FALSE, eval=TRUE, message=FALSE}
+```{r setup, echo=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library("tidyverse")
+library("knitr")
+library("ggplot2")
+```
+
+```{r echo=FALSE}
 source("../source/a4-helpers.R")
 source("../source/analysis.R")
 ```
 
 ## Abstract 
-[TODO: Include a short abstract (about 50 words)]
+This data analysis project looks at statistics from the Vera Institute 
+regarding incarceration rates in America. The dataset spans several decades and 
+all 50 states, and we will use it to depict trends in incarceration demographics  
+over time. 
 
-# Test (TODO: Remove before submission!!)
-```{r echo=FALSE}
-q1_string <- test_query1()
-num <- 5
-```
-As you know, this is a markdown report. The [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) is **useful!**
-
-* Here's a test of a dynamic variable. Say **"`r q1_string`!!!** 
-* Here's another test. A vector
-of numbers: `r test_query2(num)`.
-
-Recall that _{r echo=TRUE}_ can be used to display the code, 
-which is very useful when developing and debugging a report. Here's an example: 
-
-```{r echo=TRUE}
-num <- 5
-sum <- sum(test_query2(num))
-print(sum)
-```
 
 ## Introduction 
-[TODO]
+>"The United States is home to less than 5 percent of the world’s population, 
+> yet nearly 16 percent of all incarcerated people—roughly two million people—
+> are held in our jails and prisons. We incarcerate more people per capita than 
+> any country in the world."
+> *Source: [Vera Institute](https://www.vera.org/ending-mass-incarceration)*  
+
+This data set addresses the pressing social issue of mass incarceration and its  
+effects on communities— specifically, and disproportionately, on impoverished 
+communities and communities of color. Factors including (but not limited to):
+over-policing of poor areas, the monetary bail system, racial disparities in 
+stops and arrests, and a weakened public defender system *all* contribute to the 
+matrix of domination being upheld. An unjust legal and incarceration system 
+maintains a power structure, and this power structure is what the Vera Institute 
+and its dataset aims to challenge.  
+
+second paragraph about the questions I answer Doggo ipsum thicc borkf snoot, very
+jealous pupper. Wrinkler bork maximum borkdrive wrinkler corgo shibe the 
+neighborhood pupper, extremely cuuuuuute long bois ruff puggorino. Doge heck blop
+heckin, long doggo. Doge you are doin me a concern big Doggo ipsum thicc borkf
+snoot, very jealous pupper. Wrinkler bork maximum borkdrive wrinkler corgo shibe
+the neighborhood pupper, extremely cuuuuuute long bois ruff puggorino. Doge
+heck blop heckin, long doggo. Doge you are doin me a concern big ol fat boi 
+doing me a 
 
 ## Data Summary 
-[TODO]
 
-[TODO ... other sections ... See Canvas for details]
+```{r echo=FALSE}
+source("../source/analysis.R")
+```
 
-_All the very best with your work!_
+I began my data analysis by first narrowing the dataset down to only Washington 
+state. I wanted to look at the growth of the jail and prison populations in 
+comparison to the growth of the overall population.
+
+Between the years 1995 and 2016, Washington state had a total population growth 
+of **`r wapop_change`%**. However, the population of individuals in jail grew by 
+**`r jailpop_change`%** and the population of individuals in prison grew by 
+**`r prisonpop_change`**%.
+
+Then I broadened the analysis to the entirety of the United States. The most 
+recent year that had the most available data was 2016, so the analysis focuses 
+on that year.
+
+Across all 50 states, the average white population was
+**`r avg_whitepop`**%, the average black population was **`r avg_blackpop`**%,
+and the average Latino population was **`r avg_latinxpop`**%. However, these
+proportions are not the same in states' prison populations. The average 
+percentage of prisoners who were white, black, and Latino were 
+**`r avg_whiteprison`**%, **`r avg_blackprison`**%, and 
+**`r avg_latinxprison`**% respectively.
+We would expect the proportion of races to be about the same across the general
+population and the prison population; however, fewer white people are imprisoned
+at the same time that more black people are. 
+
+
+## Growth of the U.S. Prison Population
+
+```{r echo=FALSE}
+plot_jail_pop_for_us()
+
+```  
+
+**CAPTION: The total population of individuals in U.S. jails over the course of
+48 years.**  
+
+***Analysis***  
+
+The overarching questions regarding mass incarceration are: how has the state of incarceration changed over the years, and what could be the cause? The graph depicts a steep incline in jail population, beginning in around 1980. Between 1970 and 2018, the national jail population grew by over 500,000, which again prompts the question: why?  
+
+## Growth of Prison Population by State  
+
+```{r echo=FALSE}
+plot_jail_pop_by_states(c("MA", "AZ", "TN", "CO", "AL", 
+                          "MD", "WA"))  
+
+```  
+
+**CAPTION: A line graph depicting changes in jail population between 1970-2018, in Massachusetts, Arizona, Tennessee, Colorado, Alabama, Maryland, and Washington.**  
+
+***Analysis***    
+
+I chose these six states in particular because they have similar populations (around 7-8 million), which allows us to more clearly compare incarceration rate growth. One trend that stands out noticeably is a steady incline beginning in 1990, which peaks around 2008 and then begins to decline just a bit. This could represent quite a number of things, potentially including national justice reforms that reduced incarceration rates, or a sweeping impact caused by the 2008 recession. Another noticeable factor is that Tennessee's jail population begins and remains much higher than the other states', despite having similar population sizes.
+
 
