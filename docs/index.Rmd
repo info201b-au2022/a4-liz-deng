@@ -5,8 +5,8 @@ date: '2022-11-26'
 output: html_document
 ---
 
-```{r setup, echo=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
 library("tidyverse")
 library("knitr")
 library("ggplot2")
@@ -20,36 +20,41 @@ source("../source/analysis.R")
 ## Abstract 
 This data analysis project looks at statistics from the Vera Institute 
 regarding incarceration rates in America. The dataset spans several decades and 
-all 50 states, and we will use it to depict trends in incarceration demographics  
+all 50 states, as well as factors such as race, gender, jail vs. prison, etc.
+We will use it to depict trends in incarceration demographics  
 over time. 
 
 
-## Introduction 
+## I. Introduction 
 >"The United States is home to less than 5 percent of the world’s population, 
 > yet nearly 16 percent of all incarcerated people—roughly two million people—
 > are held in our jails and prisons. We incarcerate more people per capita than 
 > any country in the world."
 > *Source: [Vera Institute](https://www.vera.org/ending-mass-incarceration)*  
 
-This data set addresses the pressing social issue of mass incarceration and its  
+This data set from the Vera Institute addresses the pressing social issue of mass incarceration and its  
 effects on communities— specifically, and disproportionately, on impoverished 
 communities and communities of color. Factors including (but not limited to):
 over-policing of poor areas, the monetary bail system, racial disparities in 
 stops and arrests, and a weakened public defender system *all* contribute to the 
 matrix of domination being upheld. An unjust legal and incarceration system 
-maintains a power structure, and this power structure is what the Vera Institute 
-and its dataset aims to challenge.  
+maintains a power structure, which is what the Vera Institute aims to challenge. 
 
-second paragraph about the questions I answer Doggo ipsum thicc borkf snoot, very
-jealous pupper. Wrinkler bork maximum borkdrive wrinkler corgo shibe the 
-neighborhood pupper, extremely cuuuuuute long bois ruff puggorino. Doge heck blop
-heckin, long doggo. Doge you are doin me a concern big Doggo ipsum thicc borkf
-snoot, very jealous pupper. Wrinkler bork maximum borkdrive wrinkler corgo shibe
-the neighborhood pupper, extremely cuuuuuute long bois ruff puggorino. Doge
-heck blop heckin, long doggo. Doge you are doin me a concern big ol fat boi 
-doing me a 
+The following data analysis questions the current incarceration system's inequities 
+in terms of race and location. The dataset from the Vera Institute has variables that 
+address both jail and prison admissions, the rate of admission/population by race and
+gender, reasons for jail holding, and more. A dataset with this variety of variables is very 
+helpful in addressing values of equity, power, and justice.  
 
-## Data Summary 
+This report analyzes the following questions:  
+1. How has the national population of imprisoned individuals changed in the past few decades?  
+2. How do changes in prison population differ across states?  
+3.  Are certain races disproportionately represented in prison?  
+4. Does the urbanicity of an area affect its prison racial demographics?  
+5. Which states have the highest rates of prison admissions?
+
+
+## II. Data Summary 
 
 ```{r echo=FALSE}
 source("../source/analysis.R")
@@ -80,7 +85,7 @@ population and the prison population; however, fewer white people are imprisoned
 at the same time that more black people are. 
 
 
-## Growth of the U.S. Prison Population
+## III. Growth of the U.S. Prison Population
 
 ```{r echo=FALSE}
 plot_jail_pop_for_us()
@@ -94,7 +99,7 @@ plot_jail_pop_for_us()
 
 The overarching questions regarding mass incarceration are: how has the state of incarceration changed over the years, and what could be the cause? The graph depicts a steep incline in jail population, beginning in around 1980. Between 1970 and 2018, the national jail population grew by over 500,000, which again prompts the question: why?  
 
-## Growth of Prison Population by State  
+## IV. Growth of Prison Population by State  
 
 ```{r echo=FALSE}
 plot_jail_pop_by_states(c("MA", "AZ", "TN", "CO", "AL", 
@@ -106,6 +111,38 @@ plot_jail_pop_by_states(c("MA", "AZ", "TN", "CO", "AL",
 
 ***Analysis***    
 
-I chose these six states in particular because they have similar populations (around 7-8 million), which allows us to more clearly compare incarceration rate growth. One trend that stands out noticeably is a steady incline beginning in 1990, which peaks around 2008 and then begins to decline just a bit. This could represent quite a number of things, potentially including national justice reforms that reduced incarceration rates, or a sweeping impact caused by the 2008 recession. Another noticeable factor is that Tennessee's jail population begins and remains much higher than the other states', despite having similar population sizes.
+I chose these six states in particular because they have similar populations (around 7-8 million), which allows us to more clearly compare incarceration rate growth. One trend that stands out noticeably is a steady incline beginning in 1990, which peaks around 2008 and then begins to decline just a bit. This could represent quite a number of things, potentially including national justice reforms that reduced incarceration rates, or a sweeping impact caused by the 2008 recession. Another noticeable factor is that Tennessee's jail population begins and remains much higher than the other states', despite having similar population sizes.  
+
+## V. Prisoner Race Proportions By Urbanicity  
+```{r echo=FALSE}
+plot_prison() 
+plot_gen()
+```    
+
+**CAPTION: The first stacked bar chart depicts the racial proportions of prison populations for all four levels of urbanicity. The second chart depicts the racial proportions of the *overall* populations.**  
+
+***Analysis***      
+The variables I chose to compare were the racial proportions of the prison populace compared to the overall populace, and how these proportions differed based on the urbanicity of a location. These charts were calculated by finding the average percentage of each race in all prisons across the U.S., then the average percentage of each in the whole of the country.  
+
+My questions were:  
+1. How do racial demographics in prison compare to the racial demographics of America as a whole?   
+2. Do racial proportions differ by urbanicity?  
+
+The resulting charts clearly indicate that although most of the country is white, a smaller proportion of the national prison populace is white. Additionally, Black and Latinx individuals comprise a larger proportion of the prison population than they do in the overall population. It's also noticeable that more POC are imprisoned as urbanicity shifts from rural to urban.    
+
+## VI. State Prison Admissions
+```{r echo=FALSE}
+plot_map()
+```  
+
+**CAPTION: A chloreopleth map depicting average prison admission rates by state,
+with the highest rates in orange. States in gray did not have data available.**  
+
+***Analysis***    
+
+The variable depicted in the map is the total prison admissions rate for each state. Several states did not have sufficient available data; these are shown on the map in gray.  
+
+An observation that can be made is the fact that Missouri and Arkansas both have higher average prison admission rates than Texas or California, despite having significantly smaller total populations. Further data analysis can be done to determine why this may be the case. 
+
 
 
