@@ -1,8 +1,11 @@
+
 library("tidyverse")
 library("ggplot2") 
+library("dplyr")
+library("mapproj")
 
 # The functions might be useful for A4
-source("../source/a4-helpers.R")
+# source("../source/a4-helpers.R")
 
 raw_data <- read.csv("../source/incarceration_trends.csv",
                 stringsAsFactors = FALSE)
@@ -10,7 +13,7 @@ raw_data <- read.csv("../source/incarceration_trends.csv",
 # View(raw_data)
 
 
-
+options(scipen = 100)
 
 ## Section 2  ---- 
 #----------------------------------------------------------------------------#
@@ -191,18 +194,139 @@ plot_jail_pop_by_states <- function(states) {
 
 ## Section 5  ---- 
 #----------------------------------------------------------------------------#
-# <variable comparison that reveals potential patterns of inequality>
-# Your functions might go here ... <todo:  update comment>
-# See Canvas
+# Proportions of Nonwhite Prisoners by Urbanicity
+raw_data <- read.csv("../source/incarceration_trends.csv",
+                     stringsAsFactors = FALSE) 
+
+race_pris <- filter(raw_data, year >= 2000) %>%
+  select(year, state, county_name, urbanicity, total_prison_pop,
+         white_prison_pop, aapi_prison_pop, black_prison_pop, 
+         latinx_prison_pop, native_prison_pop, other_race_prison_pop ) %>%
+  drop_na()
+
+
+by_urban <- race_pris %>%
+  group_by(urbanicity) %>% 
+  summarize(avg_total = mean(total_prison_pop),
+            avg_white = mean(white_prison_pop),
+            avg_aapi = mean(aapi_prison_pop), 
+            avg_black = mean(black_prison_pop),
+            avg_latinx = mean(latinx_prison_pop),
+            avg_native = mean(native_prison_pop),
+            avg_other = mean(other_race_prison_pop))
+
+percent <- data.frame(
+  urbanicity = by_urban$urbanicity,
+  white = round((by_urban$avg_white / by_urban$avg_total) * 100, 2),
+  aapi = round((by_urban$avg_aapi/ by_urban$avg_total) * 100, 2),
+  black = round((by_urban$avg_black / by_urban$avg_total) * 100, 2),
+  latinx = round((by_urban$avg_latinx / by_urban$avg_total) * 100, 2),
+  native = round((by_urban$avg_native / by_urban$avg_total) * 100, 2)
+) %>%
+  gather(key = race, value = Percent, white:native)
+
+# View(percent)
+
+plot_prison <- function(){
+  prison_plot <- ggplot(data = percent) +
+    geom_col(mapping = 
+               aes(x = urbanicity, y = Percent, fill = race)) +
+    scale_color_brewer(palette = "Dark2") + 
+    labs(
+      title = "Percentages of Races in Prison by Urbanicity (2000-2018)",
+      x = "Urbanicity",
+      y = "Percent")
+  return(prison_plot)
+}
+
+
+options(scipen = 100)
+
+gen_pop <- filter(raw_data, year >= 2000) %>%
+  select(year, state, county_name, urbanicity, total_pop_15to64,
+         aapi_pop_15to64, black_pop_15to64, latinx_pop_15to64,
+         native_pop_15to64, white_pop_15to64) %>%
+  drop_na() %>%
+  group_by(urbanicity) %>%
+  summarize(
+    total_pop_15to64 = mean(total_pop_15to64),
+    white_pop_15to64 = mean(white_pop_15to64),
+    aapi_pop_15to64 = mean(aapi_pop_15to64),
+    black_pop_15to64 = mean(black_pop_15to64),
+    latinx_pop_15to64 = mean(latinx_pop_15to64),
+    native_pop_15to64 = mean(native_pop_15to64)
+  ) %>%
+  filter(!row_number() == 1) %>%
+  mutate(
+    white = round((white_pop_15to64 / total_pop_15to64) * 100, 2),
+    aapi = round((aapi_pop_15to64 / total_pop_15to64) * 100, 2),
+    black = round((black_pop_15to64 / total_pop_15to64) * 100, 2),
+    latinx = round((latinx_pop_15to64 / total_pop_15to64) * 100, 2),
+    native = round((native_pop_15to64 / total_pop_15to64) * 100, 2)
+  ) %>%
+  select(urbanicity, white, aapi, black,
+         latinx, native) %>%
+  gather(key = race, value = Percent, white:native)
+
+# View(gen_pop)
+plot_gen <- function(){
+  gen_plot <- ggplot(data = gen_pop) +
+    geom_col(mapping = 
+               aes(x = urbanicity, y = Percent, fill = race)) +
+    scale_color_brewer(palette = "Dark2") + 
+    labs(
+      title = "Percentages of Races in Overall Population
+      by Urbanicity (2000-2018)",
+      x = "Urbanicity",
+      y = "Percent")
+  return(gen_plot)
+}
+
+
 #----------------------------------------------------------------------------#
 
 ## Section 6  ---- 
 #----------------------------------------------------------------------------#
-# <a map shows potential patterns of inequality that vary geographically>
-# Your functions might go here ... <todo:  update comment>
-# See Canvas
+# Map of Female Prison Population Rates
 #----------------------------------------------------------------------------#
 
-## Load data frame ---- 
+
+prison_rate <- raw_data %>%
+  select(year, state, total_prison_adm_rate) %>%
+  group_by(state) %>%
+  drop_na() %>%
+  summarize(prison_pop = round(mean(total_prison_adm_rate), 2)) %>%
+  mutate(state = tolower(state.name[match(state, state.abb)]))
+
+
+# View(prison_rate)
+
+states <- map_data("state") %>%
+  rename(state = region) %>%
+  left_join(prison_rate, by="state")
+
+# View(states) 
+
+
+plot_map <- function() {
+  map <- ggplot(states) +
+    geom_polygon(
+      mapping = aes(x = long, y = lat, group = group, fill = prison_pop),
+      color="gray",
+      size=.25
+    ) +
+    coord_map() +
+    scale_fill_continuous(low = "White", high = "#ff5100") +
+    labs(
+      title = "State Prison Admissions Rates",
+      fill = "Average Prison Admissions Rate",
+      x = " ",
+      y = " "
+    )
+  return(map)
+}
+
+
+
 
 
